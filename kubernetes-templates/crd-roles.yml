@@ -1,0 +1,26 @@
+---
+kind: ClusterRole
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: aggregate-crd-example-admin-edit
+  labels:
+    # Add these permissions to the "admin" default role.
+    rbac.authorization.k8s.io/aggregate-to-admin: "true"
+    # Add these permissions to the "edit" default role.
+    rbac.authorization.k8s.io/aggregate-to-edit: "true"
+rules:
+  - apiGroups: ["crds.kubernetes.wimsey.us"]
+    resources: ["examples"]
+    verbs: ["get", "list", "watch", "create", "update", "patch", "delete", "deletecollection"]
+---
+kind: ClusterRole
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: aggregate-crd-example-view
+  labels:
+    # Add these permissions to the "view" default role.
+    rbac.authorization.k8s.io/aggregate-to-view: "true"
+rules:
+  - apiGroups: ["crds.kubernetes.wimsey.us"]
+    resources: ["examples"]
+    verbs: ["get", "list", "watch"]

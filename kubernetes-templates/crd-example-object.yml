@@ -1,0 +1,13 @@
+---
+apiVersion: crds.kubernetes.wimsey.us/v1
+kind: ExampleCRD
+metadata:
+  name: my-example-object
+spec:
+  myExampleData: Something you care about
+  someProps:
+    nestedProperties: true
+    countInside: 43.0
+    indexed: sometimes-no
+
+

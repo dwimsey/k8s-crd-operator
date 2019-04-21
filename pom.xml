@@ -3,15 +3,19 @@
 		 xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 
-	<groupId>com.shackspacehosting</groupId>
-	<artifactId>openshift-pvmanager</artifactId>
-	<version>1.4.0-SNAPSHOT</version>
+	<groupId>us.wimsey.kubernetes.operators.crd</groupId>
+	<artifactId>creedo</artifactId>
+	<version>PoC</version>
 	<packaging>jar</packaging>
 
-	<name>openshift-pvmanager</name>
-	<description>Persistent Volume Manager</description>
+	<name>creedo</name>
+	<description>Custom Resource Definition Operator</description>
 
 	<parent>
+		<!--
+			We need a openshift starter for tooling that has all of our plugins, config prebaked and shared across all
+			apps for reuse instead of the base spring-boot-starter (which we may inherit from anyway)
+		 -->
 		<groupId>org.springframework.boot</groupId>
 		<artifactId>spring-boot-starter-parent</artifactId>
 		<version>1.5.9.RELEASE</version>
@@ -19,21 +23,19 @@
 	</parent>
 
 	<properties>
-		<ignite.version>2.6.0</ignite.version>
-		<skipTests>true</skipTests>
-
-
-		<docker.image.skip>true</docker.image.skip>
-		<docker.push.skip>true</docker.push.skip>
+		<ignite.version>2.7.0</ignite.version>
+		<docker.image.skip>false</docker.image.skip>
+		<docker.push.skip>false</docker.push.skip>
 		<docker.push.versiontag.skip>true</docker.push.versiontag.skip>
 		<docker.registry.host>docker.io</docker.registry.host>
 		<docker.registry.namespace>dwimsey</docker.registry.namespace>
 		<docker.latest.tag>latest</docker.latest.tag>
-		<docker.imagename>pvmanager</docker.imagename>
-
+		<docker.imagename>creedo</docker.imagename>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 		<java.version>1.8</java.version>
+		<java.compiler.source>1.8</java.compiler.source>
+		<java.compiler.target>1.8</java.compiler.target>
 	</properties>
 
 	<profiles>
@@ -70,19 +72,6 @@
 		</dependency>
 
 		<dependency>
-			<groupId>org.springframework.ldap</groupId>
-			<artifactId>spring-ldap-core</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.springframework.security</groupId>
-			<artifactId>spring-security-ldap</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>com.unboundid</groupId>
-			<artifactId>unboundid-ldapsdk</artifactId>
-		</dependency>
-
-		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-test</artifactId>
 			<scope>test</scope>
@@ -95,16 +84,9 @@
 		<dependency>
 			<groupId>io.kubernetes</groupId>
 			<artifactId>client-java</artifactId>
-			<version>2.0.0-beta1</version>
+			<version>4.0.0</version>
+			<scope>compile</scope>
 		</dependency>
-
-		<dependency>
-			<groupId>com.jcraft</groupId>
-			<artifactId>jsch</artifactId>
-			<version>0.1.54</version>
-		</dependency>
-
-
 		<!-- Spring logging facade -->
 		<dependency>
 			<groupId>log4j</groupId>
@@ -142,7 +124,6 @@
 			<artifactId>ignite-kubernetes</artifactId>
 			<version>${ignite.version}</version>
 		</dependency>
-
 
 		<dependency>
 			<groupId>com.fasterxml.jackson.dataformat</groupId>
@@ -193,7 +174,7 @@
 						</goals>
 						<configuration>
 							<executable>true</executable>
-							<mainClass>com.shackspacehosting.engineering.pvmanager.OpenshiftPVManagerApplication</mainClass>
+							<mainClass>us.wimsey.kubernetes.operators.crd.KubernetesOperatorApplication</mainClass>
 						</configuration>
 					</execution>
 				</executions>

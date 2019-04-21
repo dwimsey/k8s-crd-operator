@@ -1,0 +1,56 @@
+---
+apiVersion: apps.openshift.io/v1
+kind: DeploymentConfig
+metadata:
+  labels:
+    app: crd-operator
+  name: {{ ocp_application_name }}
+spec:
+  replicas: 1
+  selector:
+    app: example-crd-operator
+    deploymentconfig: crd-operator-{{ ocp_application_name }}
+  strategy:
+    activeDeadlineSeconds: 21600
+    recreateParams:
+      timeoutSeconds: 600
+    resources: {}
+    type: Recreate
+  template:
+    metadata:
+      annotations:
+        openshift.io/generated-by: david@wimsey.us
+      creationTimestamp: null
+      labels:
+        app: crd-operator
+        deploymentconfig: crd-operator-{{ ocp_application_name }}
+    spec:
+      containers:
+        - image: {{ ocp_cluster_internal_registry }}/{{ cluster_container_image_path }}
+          imagePullPolicy: {{ ocp_imagePullPolicy }}
+         name: crd-operator
+          ports:
+            - containerPort: 8080
+              protocol: TCP
+          resources: {}
+          terminationMessagePath: /dev/termination-log
+          terminationMessagePolicy: File
+          volumeMounts:
+            - mountPath: /tmp
+              name: app-tmp
+            - name: operator-config
+              mountPath: /config
+              readOnly: true
+      dnsPolicy: ClusterFirst
+      restartPolicy: Always
+      schedulerName: default-scheduler
+      securityContext: {}
+      serviceAccountName: crd-operator-{{ ocp_application_name }}
+      terminationGracePeriodSeconds: 30
+      volumes:
+        - name: app-tmp
+          emptyDir: {}
+        - name: operator-config
+          configMap:
+            defaultMode: 420
+            name: operator-config-{{ ocp_application_name }}

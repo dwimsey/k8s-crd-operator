@@ -1,0 +1,9 @@
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: operator-config-{{ ocp_application_name }}
+data:
+  example.yml: |
+    ---
+    key: 'value'
